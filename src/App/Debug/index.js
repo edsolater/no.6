@@ -1,7 +1,7 @@
 import React from 'react'
 
 /**
- *  * 核心概念：el监听鼠标按下的事件、document监听鼠标按下后移动的事件
+ *  * 核心概念：el监听鼠标按下事件、document监听鼠标按下后的移动事件
  * */
 function makeDraggable(el) {
   // 暂存cursor设置、transition设置
