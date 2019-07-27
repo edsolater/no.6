@@ -1,10 +1,9 @@
 import React from 'react'
 
 /**
- *  通过修改 el event: mousedown、mouseup 与 document event: mousemove 实现
- * */ 
+ *  * 核心概念：el监听鼠标按下的事件、document监听鼠标按下后移动的事件
+ * */
 function makeDraggable(el) {
-
   // 暂存cursor设置、transition设置
   const configedCursor = el.style.cursor
   const configedTransition = el.style.transition
@@ -12,7 +11,10 @@ function makeDraggable(el) {
   // 换成‘拖拽’手势
   el.style.cursor = configedCursor || 'grab'
 
+  // 声明变量，已储存地址链接
   let handler
+
+  //* el监听mousedown事件
   el.addEventListener('mousedown', e => {
     // 禁用 Transition 设置（不然会拖拽不能）
     el.style.transition = undefined
@@ -33,7 +35,7 @@ function makeDraggable(el) {
     // 换成正在拖拽的手势
     el.style.cursor = configedCursor || 'grabbing'
 
-    // 定义推拽时的handler
+    //  定义推拽时的handler
     function handleMouseMove(e) {
       const newTransX = e.x - mousedownX + preTransX
       const newTransY = e.y - mousedownY + preTransY
@@ -41,14 +43,15 @@ function makeDraggable(el) {
     }
     handler = handleMouseMove // 上抛引用
 
-    // document上监听鼠标移动事件。（不能在el上监听，以防止鼠标移得太快而移出el的范围）
+    //* document上监听鼠标移动事件。（不能在el上监听，以防止鼠标移得太快而移出el的范围）
     document.addEventListener('mousemove', handler)
   })
 
+  //* el监听mouseup事件
   el.addEventListener('mouseup', e => {
     el.style.cursor = configedCursor || 'grab'
     el.style.transition = configedTransition
-    // 释放无用的 document event: mousemove
+    //* 释放无用的 document event: mousemove，以减轻 mouseup 的负担
     document.removeEventListener('mousemove', handler)
   })
 }
@@ -66,7 +69,7 @@ export const Debug = ({ draggable = true, ...props }) => {
         height: 100,
         background: 'dodgerblue',
         transform: 'translate(280px) rotate(45deg)',
-        transition:'all 800ms 1s',
+        transition: 'all 800ms 1s'
         // cursor: 'help'
       }}
       {...props}
