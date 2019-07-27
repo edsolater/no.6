@@ -1,2 +1,4 @@
-// 返回给App看的
-export {Debug as default} from './Debug/'
+import React from 'react'
+import { Debug } from './Debug/'
+
+export const App = () => <Debug />
