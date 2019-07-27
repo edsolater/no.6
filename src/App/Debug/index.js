@@ -4,7 +4,6 @@ import React from 'react'
  *  原理：el监听鼠标按下事件、并触发document监听鼠标按下后的移动事件
  * */
 function makeDraggable(el) {
-  // 暂存cursor设置、transition设置，以备用。鼠标事件后得重新挂载上去
   const configedCursor = el.style.cursor || 'grab'
   const configedTransition = el.style.transition
 
@@ -12,10 +11,7 @@ function makeDraggable(el) {
 
   function mouseDown(e) {
     e.stopPropagation()
-    // 禁用 Transition 设置（不然会拖拽不能）
-    el.style.transition = undefined
-
-    // 找出上一次/初始的transform中translate的值
+    el.style.transition = undefined// 禁用 Transition 设置（不然会拖拽不能）
     const matched =
       (el.style.transform || '').match(
         /(.*)translate\((\d+)px(?:, (\d+)px)?\)(.*)/
@@ -27,24 +23,19 @@ function makeDraggable(el) {
     const mousedownX = e.x
     const mousedownY = e.y
 
-    // 换成正在拖拽的手势
     el.style.cursor = 'grabbing'
 
-    //  定义推拽时的handler
     function mouseMove(e) {
       const newTransX = e.x - mousedownX + preTransX
       const newTransY = e.y - mousedownY + preTransY
       el.style.transform = `${otherTransformLeft}translate(${newTransX}px, ${newTransY}px)${otherTransformRight}`
     }
-    // 还原最初消去的设置，消除不必要的监听（document上）
     function mouseUp(e) {
       el.style.cursor = configedCursor
       el.style.transition = configedTransition
       document.removeEventListener('mousemove', mouseMove)
       document.removeEventListener('mouseup', mouseUp)
     }
-
-    // 不在el上监听移动事件，是为了防止鼠标移得太快而移出el的范围
     document.addEventListener('mousemove', mouseMove)
     document.addEventListener('mouseup', mouseUp)
   }
@@ -58,7 +49,6 @@ function makeDraggable(el) {
 function makeScaleable(el, options) {
   if (options === true) options = { right: true }
 
-  // 暂存cursor设置、transition设置
   const configedCursor = el.style.cursor
   const configedTransition = el.style.transition
 
